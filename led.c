@@ -2,7 +2,6 @@
 
 typedef struct led_info
 {
-
     uint32_t RCC_APB2Periph;
     uint16_t GPIO_Pin;
     GPIO_TypeDef* GPIOx;
@@ -15,7 +14,7 @@ static const led_info_t g_led_info[] =
         .RCC_APB2Periph = RCC_APB2Periph_GPIOC,
         .GPIO_Pin = GPIO_Pin_13,
         .GPIOx = GPIOC,
-        .ON_Sta = Bit_RESET,
+        .ON_Sta = 0,
     },
 };
 
@@ -33,7 +32,9 @@ static void LED_GPIO_Configuration (void)
         GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
         GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
         GPIO_Init (g_led_info[i].GPIOx, &GPIO_InitStructure);
-        GPIO_WriteBit (g_led_info[i].GPIOx, g_led_info[i].GPIO_Pin, (BitAction)!g_led_info[i].ON_Sta);
+        GPIO_WriteBit (g_led_info[i].GPIOx,
+                       g_led_info[i].GPIO_Pin,
+                       (BitAction)!g_led_info[i].ON_Sta);
     }
 }
 
