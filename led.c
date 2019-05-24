@@ -1,32 +1,45 @@
 #include "led.h"
 
-
-/* 初始化LED */
-void InitLed ( void )
+typedef struct led_info
 {
-    /*定义一个GPIO_InitTypeDef类型的结构体*/
+
+    uint32_t RCC_APB2Periph;
+    uint16_t GPIO_Pin;
+    GPIO_TypeDef* GPIOx;
+    uint8_t  On_Sta;
+} led_info_t;
+
+static const led_info_t g_led_info[] =
+{
+    {
+        .RCC_APB2Periph = RCC_APB2Periph_GPIOC,
+        .GPIO_Pin = GPIO_Pin_13,
+        .GPIOx = GPIOC,
+        .On_Sta = 0,
+    },
+};
+
+static const uint8_t LED_NUM = sizeof (g_led_info) / sizeof (g_led_info[0]);
+
+static void LED_GPIO_Configuration (void)
+{
+    int i;
     GPIO_InitTypeDef GPIO_InitStructure;
 
-    /*开启GPIOC外设时钟*/
-    RCC_APB2PeriphClockCmd ( RCC_LED, ENABLE );
+    for (i = 0; i < LED_NUM; i++)
+    {
+        RCC_APB2PeriphClockCmd (g_led_info[i].RCC_APB2Periph, ENABLE);
+        GPIO_InitStructure.GPIO_Pin = g_led_info[i].GPIO_Pin;
+        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+        GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+        GPIO_Init (g_led_info[i].GPIOx, &GPIO_InitStructure);
+        GPIO_WriteBit (g_led_info[i].GPIOx, g_led_info[i].GPIO_Pin, !g_led_info[i].On_Sta);
+    }
+}
 
-    /* 选择要控制的GPIOB引脚 */
-    GPIO_InitStructure.GPIO_Pin = PIN_LED;
-
-    /*设置引脚速率为50MHz */
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-
-    /*设置引脚模式为通用推挽输出*/
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-
-    /*调用库函数，初始化GPIOA*/
-    GPIO_Init ( PORT_LED, &GPIO_InitStructure );
-
-    /* 关闭led灯 GPIOx->BSRR = GPIO_Pin */
-    GPIO_SetBits ( PORT_LED, PIN_LED );
-
-    /* 关闭led灯 GPIOx->BRR = GPIO_Pin; */
-    // GPIO_ResetBits( PORT_LED, PIN_LED );
+void led_init (void)
+{
+    LED_GPIO_Configuration();
 }
 
 int led_set (uint8_t led_id, uint8_t state)
@@ -35,27 +48,19 @@ int led_set (uint8_t led_id, uint8_t state)
 
     if (led_id < LED_NUM)
     {
-        switch (led_id)
+        if (state)
         {
-            case 0:
-            {
-                if (state)
-                {
-
-                }
-                else
-                {
-
-                }
-
-                break;
-            }
-
-            default:
-            {
-                break;
-            }
+            GPIO_WriteBit (g_led_info[led_id].GPIOx,
+                           g_led_info[led_id].GPIO_Pin,
+                           g_led_info[led_id].On_Sta);
         }
+        else
+        {
+            GPIO_WriteBit (g_led_info[led_id].GPIOx,
+                           g_led_info[led_id].GPIO_Pin,
+                           !g_led_info[led_id].On_Sta);
+        }
+
     }
     else
     {
@@ -65,25 +70,16 @@ int led_set (uint8_t led_id, uint8_t state)
     return retval;
 
 }
+
 int led_on (uint8_t led_id)
 {
     int retval = 0;
 
     if (led_id < LED_NUM)
     {
-        switch (led_id)
-        {
-            case 0:
-            {
-                PORT_LED->BSRR = PIN_LED;
-                break;
-            }
-
-            default:
-            {
-                break;
-            }
-        }
+        GPIO_WriteBit (g_led_info[led_id].GPIOx,
+                       g_led_info[led_id].GPIO_Pin,
+                       g_led_info[led_id].On_Sta);
     }
     else
     {
@@ -93,25 +89,16 @@ int led_on (uint8_t led_id)
     return retval;
 
 }
+
 int led_off (uint8_t led_id)
 {
     int retval = 0;
 
     if (led_id < LED_NUM)
     {
-        switch (led_id)
-        {
-            case 0:
-            {
-                PORT_LED->BSRR = PIN_LED;
-                break;
-            }
-
-            default:
-            {
-                break;
-            }
-        }
+        GPIO_WriteBit (g_led_info[led_id].GPIOx,
+                       g_led_info[led_id].GPIO_Pin,
+                       !g_led_info[led_id].On_Sta);
     }
     else
     {
@@ -120,26 +107,14 @@ int led_off (uint8_t led_id)
 
     return retval;
 }
+
 int led_toggle (uint8_t led_id)
 {
     int retval = 0;
 
     if (led_id < LED_NUM)
     {
-        switch (led_id)
-        {
-            case 0:
-            {
-                PORT_LED->ODR ^= PIN_LED;
-
-                break;
-            }
-
-            default:
-            {
-                break;
-            }
-        }
+        g_led_info[led_id].GPIOx->ODR ^= g_led_info[led_id].GPIO_Pin;
     }
     else
     {
