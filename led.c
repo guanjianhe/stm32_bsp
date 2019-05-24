@@ -6,7 +6,7 @@ typedef struct led_info
     uint32_t RCC_APB2Periph;
     uint16_t GPIO_Pin;
     GPIO_TypeDef* GPIOx;
-    uint8_t  On_Sta;
+    uint8_t ON_Sta;
 } led_info_t;
 
 static const led_info_t g_led_info[] =
@@ -15,7 +15,7 @@ static const led_info_t g_led_info[] =
         .RCC_APB2Periph = RCC_APB2Periph_GPIOC,
         .GPIO_Pin = GPIO_Pin_13,
         .GPIOx = GPIOC,
-        .On_Sta = 0,
+        .ON_Sta = Bit_RESET,
     },
 };
 
@@ -33,7 +33,7 @@ static void LED_GPIO_Configuration (void)
         GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
         GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
         GPIO_Init (g_led_info[i].GPIOx, &GPIO_InitStructure);
-        GPIO_WriteBit (g_led_info[i].GPIOx, g_led_info[i].GPIO_Pin, !g_led_info[i].On_Sta);
+        GPIO_WriteBit (g_led_info[i].GPIOx, g_led_info[i].GPIO_Pin, (BitAction)!g_led_info[i].ON_Sta);
     }
 }
 
@@ -52,13 +52,13 @@ int led_set (uint8_t led_id, uint8_t state)
         {
             GPIO_WriteBit (g_led_info[led_id].GPIOx,
                            g_led_info[led_id].GPIO_Pin,
-                           g_led_info[led_id].On_Sta);
+                           (BitAction)g_led_info[led_id].ON_Sta);
         }
         else
         {
             GPIO_WriteBit (g_led_info[led_id].GPIOx,
                            g_led_info[led_id].GPIO_Pin,
-                           !g_led_info[led_id].On_Sta);
+                           (BitAction)!g_led_info[led_id].ON_Sta);
         }
 
     }
@@ -79,7 +79,7 @@ int led_on (uint8_t led_id)
     {
         GPIO_WriteBit (g_led_info[led_id].GPIOx,
                        g_led_info[led_id].GPIO_Pin,
-                       g_led_info[led_id].On_Sta);
+                       (BitAction)g_led_info[led_id].ON_Sta);
     }
     else
     {
@@ -98,7 +98,7 @@ int led_off (uint8_t led_id)
     {
         GPIO_WriteBit (g_led_info[led_id].GPIOx,
                        g_led_info[led_id].GPIO_Pin,
-                       !g_led_info[led_id].On_Sta);
+                       (BitAction)!g_led_info[led_id].ON_Sta);
     }
     else
     {
