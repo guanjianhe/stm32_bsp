@@ -18,32 +18,32 @@ static const led_info_t g_led_info[] =
     },
 };
 
-static const uint8_t LED_NUM = sizeof (g_led_info) / sizeof (g_led_info[0]);
+static const uint8_t LED_NUM = sizeof(g_led_info) / sizeof(g_led_info[0]);
 
-static void LED_GPIO_Configuration (void)
+static void LED_GPIO_Configuration(void)
 {
     int i;
     GPIO_InitTypeDef GPIO_InitStructure;
 
     for (i = 0; i < LED_NUM; i++)
     {
-        RCC_APB2PeriphClockCmd (g_led_info[i].RCC_APB2Periph, ENABLE);
+        RCC_APB2PeriphClockCmd(g_led_info[i].RCC_APB2Periph, ENABLE);
         GPIO_InitStructure.GPIO_Pin = g_led_info[i].GPIO_Pin;
         GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
         GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-        GPIO_Init (g_led_info[i].GPIOx, &GPIO_InitStructure);
-        GPIO_WriteBit (g_led_info[i].GPIOx,
-                       g_led_info[i].GPIO_Pin,
-                       (BitAction)!g_led_info[i].ON_Sta);
+        GPIO_Init(g_led_info[i].GPIOx, &GPIO_InitStructure);
+        GPIO_WriteBit(g_led_info[i].GPIOx,
+                      g_led_info[i].GPIO_Pin,
+                      (BitAction)!g_led_info[i].ON_Sta);
     }
 }
 
-void led_init (void)
+void led_init(void)
 {
     LED_GPIO_Configuration();
 }
 
-int led_set (uint8_t led_id, uint8_t state)
+int led_set(uint8_t led_id, uint8_t state)
 {
     int retval = 0;
 
@@ -51,15 +51,15 @@ int led_set (uint8_t led_id, uint8_t state)
     {
         if (state)
         {
-            GPIO_WriteBit (g_led_info[led_id].GPIOx,
-                           g_led_info[led_id].GPIO_Pin,
-                           (BitAction)g_led_info[led_id].ON_Sta);
+            GPIO_WriteBit(g_led_info[led_id].GPIOx,
+                          g_led_info[led_id].GPIO_Pin,
+                          (BitAction)g_led_info[led_id].ON_Sta);
         }
         else
         {
-            GPIO_WriteBit (g_led_info[led_id].GPIOx,
-                           g_led_info[led_id].GPIO_Pin,
-                           (BitAction)!g_led_info[led_id].ON_Sta);
+            GPIO_WriteBit(g_led_info[led_id].GPIOx,
+                          g_led_info[led_id].GPIO_Pin,
+                          (BitAction)!g_led_info[led_id].ON_Sta);
         }
 
     }
@@ -72,15 +72,15 @@ int led_set (uint8_t led_id, uint8_t state)
 
 }
 
-int led_on (uint8_t led_id)
+int led_on(uint8_t led_id)
 {
     int retval = 0;
 
     if (led_id < LED_NUM)
     {
-        GPIO_WriteBit (g_led_info[led_id].GPIOx,
-                       g_led_info[led_id].GPIO_Pin,
-                       (BitAction)g_led_info[led_id].ON_Sta);
+        GPIO_WriteBit(g_led_info[led_id].GPIOx,
+                      g_led_info[led_id].GPIO_Pin,
+                      (BitAction)g_led_info[led_id].ON_Sta);
     }
     else
     {
@@ -91,15 +91,15 @@ int led_on (uint8_t led_id)
 
 }
 
-int led_off (uint8_t led_id)
+int led_off(uint8_t led_id)
 {
     int retval = 0;
 
     if (led_id < LED_NUM)
     {
-        GPIO_WriteBit (g_led_info[led_id].GPIOx,
-                       g_led_info[led_id].GPIO_Pin,
-                       (BitAction)!g_led_info[led_id].ON_Sta);
+        GPIO_WriteBit(g_led_info[led_id].GPIOx,
+                      g_led_info[led_id].GPIO_Pin,
+                      (BitAction)!g_led_info[led_id].ON_Sta);
     }
     else
     {
@@ -109,7 +109,7 @@ int led_off (uint8_t led_id)
     return retval;
 }
 
-int led_toggle (uint8_t led_id)
+int led_toggle(uint8_t led_id)
 {
     int retval = 0;
 
