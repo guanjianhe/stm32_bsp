@@ -1,11 +1,11 @@
 #include "uart.h"
 
-#define UART_TXB 128
+#define UART1_TXB 128
 
 static volatile struct
 {
     uint16_t    tri, twi, tct;
-    uint8_t     tbuf[UART_TXB];
+    uint8_t     tbuf[UART1_TXB];
 } Fifo1;
 
 
@@ -13,11 +13,11 @@ void xputc(uint8_t d)
 {
     int i;
 
-    while (Fifo1.tct >= UART_TXB) ;
+    while (Fifo1.tct >= UART1_TXB) ;
 
     i = Fifo1.twi;
     Fifo1.tbuf[i] = d;
-    Fifo1.twi = ++i % UART_TXB;
+    Fifo1.twi = ++i % UART1_TXB;
     __disable_irq();
     Fifo1.tct++;
     USART_ITConfig(USART1, USART_IT_TXE, ENABLE);
@@ -96,7 +96,7 @@ void USART1_IRQHandler(void)
             Fifo1.tct = (uint16_t)i;
             i = Fifo1.tri;
             USART_SendData(USART1, Fifo1.tbuf[i]);
-            Fifo1.tri = ++i % UART_TXB;
+            Fifo1.tri = ++i % UART1_TXB;
         }
         else
         {
