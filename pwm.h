@@ -3,6 +3,6 @@
 
 #include "stm32f10x.h"
 
-extern void InitPWM ( void );
+extern void InitPWM(void);
 
 #endif
