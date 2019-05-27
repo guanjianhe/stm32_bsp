@@ -1,19 +1,19 @@
 #include "pwm.h"
 
 
-void InitPWM (void)
+void InitPWM(void)
 {
     GPIO_InitTypeDef    GPIO_InitStructure;
     TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
     TIM_OCInitTypeDef   TIM_OCInitStructure;
 
-    RCC_APB1PeriphClockCmd (RCC_APB1Periph_TIM2, ENABLE);   /* 开启TIM2时钟 */
-    RCC_APB2PeriphClockCmd (RCC_APB2Periph_GPIOA, ENABLE);  /* 开启GPIOA时钟 */
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);    /* 开启TIM2时钟 */
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);   /* 开启GPIOA时钟 */
 
     GPIO_InitStructure.GPIO_Speed   = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_Mode    = GPIO_Mode_AF_PP;      /* 复用推挽输出模式 */
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
-    GPIO_Init (GPIOA, &GPIO_InitStructure);                 /* 初始化 */
+    GPIO_Init(GPIOA, &GPIO_InitStructure);                  /* 初始化 */
 
     /*定时周期，定时周期为(arr+1)×T，T为时钟源周期*/
     TIM_TimeBaseStructure.TIM_Period = 7199;
@@ -35,7 +35,7 @@ void InitPWM (void)
     TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
 
     /*初始化*/
-    TIM_TimeBaseInit (TIM2, &TIM_TimeBaseStructure);
+    TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
 
 
     /***********************************************************/
@@ -60,7 +60,7 @@ void InitPWM (void)
     TIM_OCInitStructure.TIM_Pulse = 0;
 
     /* 初始化通道4，可以改变以上成员的值，其他通道也一样 */
-    TIM_OC4Init (TIM2, &TIM_OCInitStructure);
+    TIM_OC4Init(TIM2, &TIM_OCInitStructure);
 
 
     /*
@@ -68,15 +68,15 @@ void InitPWM (void)
      * 例：TIM_SetCompare1(TIM3,500);
      */
 
-    TIM_SetCompare4 (TIM2, 72 * 0);
+    TIM_SetCompare4(TIM2, 72 * 0);
 
 
     /* 使能TIM比较寄存器CCRx重载 */
-    TIM_OC4PreloadConfig (TIM2, TIM_OCPreload_Enable);
+    TIM_OC4PreloadConfig(TIM2, TIM_OCPreload_Enable);
     /* 使能TIM重载寄存器ARR */
-    TIM_ARRPreloadConfig (TIM2, ENABLE);
+    TIM_ARRPreloadConfig(TIM2, ENABLE);
     /* 使能定时器2 */
-    TIM_Cmd (TIM2, ENABLE);
+    TIM_Cmd(TIM2, ENABLE);
 }
 
 
